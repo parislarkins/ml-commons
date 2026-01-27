@@ -182,11 +182,25 @@ public class AgentUtils {
     }
 
     public static String addToolsToPrompt(Map<String, Tool> tools, Map<String, String> parameters, List<String> inputTools, String prompt) {
+        log.info("Adding tools to prompt");
+        log.info("Parameters: {}", parameters.entrySet().stream().map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue())).collect(Collectors.joining("\n")));
+        log.info("Prompt: {}", prompt);
+
+        String newPrompt = prompt;
+
         if (parameters.containsKey(TOOL_TEMPLATE)) {
-            return addToolsToFunctionCalling(tools, parameters, inputTools, prompt);
-        } else {
-            return addToolsToPromptString(tools, parameters, inputTools, prompt);
+            log.info("tool_template parameter found, populating details");
+            newPrompt = addToolsToFunctionCalling(tools, parameters, inputTools, newPrompt);
         }
+
+        if (parameters.containsKey(TOOL_DESCRIPTIONS) || parameters.containsKey(TOOL_NAMES)) {
+            log.info("tool_descriptions or tool_names parameter found, populating details");
+            newPrompt = addToolsToPromptString(tools, parameters, inputTools, newPrompt);
+        }
+
+        log.info("Prompt with tools updated: {}", newPrompt);
+
+        return newPrompt;
     }
 
     public static String addToolsToFunctionCalling(
