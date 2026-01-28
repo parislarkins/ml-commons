@@ -193,8 +193,8 @@ public class AgentUtils {
             newPrompt = addToolsToFunctionCalling(tools, parameters, inputTools, newPrompt);
         }
 
-        if (parameters.containsKey(TOOL_DESCRIPTIONS) || parameters.containsKey(TOOL_NAMES)) {
-            log.info("tool_descriptions or tool_names parameter found, populating details");
+        if (newPrompt.contains(TOOL_DESCRIPTIONS) || prompt.contains(TOOL_NAMES)) {
+            log.info("tool_descriptions or tool_names found in prompt, populating details");
             newPrompt = addToolsToPromptString(tools, parameters, inputTools, newPrompt);
         }
 
